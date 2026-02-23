@@ -460,6 +460,16 @@ void RegisterModuleCifDict(pybind11::module m) {
                 return *result;
               },
               "Serialize to a string", py::call_guard<py::gil_scoped_release>())
+          .def(
+              "to_dict",
+              [](const CifDict& self) {
+                py::dict result;
+                for (const auto& [key, value] : *self.dict()) {
+                  result[py::cast(key)] = py::cast(value);
+                }
+                return result;
+              },
+              "Returns the CIF data as a Python dict[str, list[str]].")
           .def("value_length", &CifDict::ValueLength, py::arg("key"),
                "Num elements in value")
           .def("__len__",
